@@ -1,30 +1,13 @@
-var nbLignes = 8;
-var nbColonnes = 8;
-var table = document.getElementById('table'); 
-
-for (let i = 0; i < nbColonnes; i++) {
-    table.appendChild(document.createElement('tr'));
-    for (let j = 0; j < nbLignes; j++) {
-        table.children[i].appendChild(document.createElement('th'));
-    }
-}
-
 var threshold = 15; // Sensibilité du secouement
 var shakeDuration = 500;
 var shakePeriod = 100;
 var firstShakeTime = 0;
 var lastShakeTime = 0; // Temps de la dernière secousse enregistrée
 
-// Fonction à exécuter quand on détecte une secousse
-function onShake() {
-    document.querySelector('header').style.color = "red";
-    // Placez ici la fonction que vous souhaitez exécuter
-}
-
 // Détecter les changements de mouvement du téléphone
 window.addEventListener('devicemotion', (event) => {
     const { acceleration } = event;
-
+    
     // Vérifier si l'accélération dépasse le seuil
     if (acceleration && (
         Math.abs(acceleration.x) > threshold ||
@@ -39,10 +22,79 @@ window.addEventListener('devicemotion', (event) => {
             lastShakeTime = now;
         }
         else if (now - firstShakeTime >= shakeDuration) { // 1000 ms = 1 seconde
-            onShake();
+            placerDes(nbDes);
+            lancerDes(nbDes);
         }
         else if (now - firstShakeTime < shakeDuration) {
             lastShakeTime = now;
         }
     }
 });
+
+
+const nbLignes = 4;
+const nbColonnes = 4;
+const table = document.getElementById('table'); 
+const nbDesMax = 5;
+let nbDes = nbDesMax;
+let tblDes = [];
+
+
+for (let i = 0; i < nbLignes; i++) {
+    table.appendChild(document.createElement('tr'));
+    for (let j = 0; j < nbColonnes; j++) {
+        table.children[i].appendChild(document.createElement('th'));
+    }    
+}    
+
+
+function initialiserTblDes(tailleTbl) {
+    tblDes = [];
+    let de;
+    for (let i = 0; i < tailleTbl; i++) {
+        de = document.createElement('div');
+        de.className = 'de';
+        de.addEventListener('click', enleverDe);
+        tblDes.push(de);
+    }
+}
+
+function enleverDe() {
+    nbDes--;
+    this.remove();
+    if (nbDes) {
+        delete tblDes[nbDes];
+    }
+    else {
+        initialiserTblDes(nbDesMax);
+    }
+}
+
+
+// Fonction à exécuter quand on détecte une secousse
+function placerDes(tailleTbl) {
+    let tblCoords = [];
+    for (let i = 0; i < tailleTbl; i++) {
+        let coords = [0, 0];
+        do {
+            coords[0] = Math.floor(Math.random() * nbLignes);
+            coords[1] = Math.floor(Math.random() * nbColonnes);
+        } while (tblCoords.includes(coords) && tailleTbl < nbColonnes * nbLignes);
+        tblCoords.push(coords);
+    }
+    for (let i = 0; i < tailleTbl; i++) {
+        table.children[tblCoords[i][0]].children[tblCoords[i][1]].appendChild(tblDes[i]);
+    }
+}
+
+
+function lancerDes(tailleTbl) {
+    document.querySelectorAll('.de').forEach(de => {
+        de.className = "de de" + Math.ceil(Math.random() * 6);
+    })
+}
+
+
+initialiserTblDes(nbDesMax);
+placerDes(nbDes);
+lancerDes(nbDes);

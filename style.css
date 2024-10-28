@@ -24,6 +24,15 @@ header {
     width: 80vw;
     height: 75vh;
     margin-left: 10vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-content: space-around;
+}
+
+th {
+    height: 16vh;
+    width: 16vh;
 }
 
 footer {
@@ -45,4 +54,40 @@ footer {
     footer {
         font-size: 4vw;
     }
+
+    th {
+        height: 16vw;
+        width: 16vw;
+    }
+}
+
+
+.de {
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+}
+
+.de1 {
+    background-image: url("source/dé1.png");
+}
+
+.de2 {
+    background-image: url("source/dé2.png");
+}
+
+.de3 {
+    background-image: url("source/dé3.png");
+}
+
+.de4 {
+    background-image: url("source/dé4.png");
+}
+
+.de5 {
+    background-image: url("source/dé5.png");
+}
+
+.de6 {
+    background-image: url("source/dé6.png");
 }
