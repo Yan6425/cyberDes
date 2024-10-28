@@ -9,8 +9,11 @@ for (let i = 0; i < nbColonnes; i++) {
     }
 }
 
-let threshold = 15; // Sensibilité du secouement
-let lastShakeTime = 0; // Temps de la dernière secousse enregistrée
+var threshold = 15; // Sensibilité du secouement
+var shakeDuration = 500;
+var shakePeriod = 100;
+var firstShakeTime = 0;
+var lastShakeTime = 0; // Temps de la dernière secousse enregistrée
 
 // Fonction à exécuter quand on détecte une secousse
 function onShake() {
@@ -31,9 +34,15 @@ window.addEventListener('devicemotion', (event) => {
         const now = Date.now();
         
         // Vérifier que la secousse précédente date d'au moins 1 seconde
-        if (now - lastShakeTime > 1000) { // 1000 ms = 1 seconde
+        if (now - lastShakeTime > shakePeriod){
+            firstShakeTime = now;
             lastShakeTime = now;
+        }
+        else if (now - firstShakeTime >= shakeDuration) { // 1000 ms = 1 seconde
             onShake();
+        }
+        else if (now - firstShakeTime < shakeDuration) {
+            lastShakeTime = now;
         }
     }
 });
