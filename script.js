@@ -48,10 +48,11 @@ for (let i = 0; i < nbLignes; i++) {
 }    
 
 
-function initialiserTblDes(tailleTbl) {
+function initialiserTblDes() {
+    nbDes = nbDesMax;
     tblDes = [];
     let de;
-    for (let i = 0; i < tailleTbl; i++) {
+    for (let i = 0; i < nbDes; i++) {
         de = document.createElement('div');
         de.className = 'de';
         de.addEventListener('click', enleverDe);
@@ -62,33 +63,36 @@ function initialiserTblDes(tailleTbl) {
 function enleverDe() {
     nbDes--;
     this.remove();
-    if (nbDes) {
-        delete tblDes[nbDes];
-    }
-    else {
+    tblDes[tblDes.indexOf(this)] = tblDes[nbDes];
+    delete tblDes[nbDes];
+    if (!nbDes) {
         initialiserTblDes(nbDesMax);
     }
 }
 
 
+function cucaracha() {
+    placerDes();
+    lancerDes();
+}
+
 // Fonction à exécuter quand on détecte une secousse
-function placerDes(tailleTbl) {
+function placerDes() {
     let tblCoords = [];
-    for (let i = 0; i < tailleTbl; i++) {
+    for (let i = 0; i < nbDes; i++) {
         let coords = [0, 0];
         do {
             coords[0] = Math.floor(Math.random() * nbLignes);
             coords[1] = Math.floor(Math.random() * nbColonnes);
-        } while (tblCoords.includes(coords) && tailleTbl < nbColonnes * nbLignes);
+        } while (tblCoords.includes(coords) && nbDes < nbColonnes * nbLignes);
         tblCoords.push(coords);
     }
-    for (let i = 0; i < tailleTbl; i++) {
+    for (let i = 0; i < nbDes; i++) {
         table.children[tblCoords[i][0]].children[tblCoords[i][1]].appendChild(tblDes[i]);
     }
 }
 
-
-function lancerDes(tailleTbl) {
+function lancerDes() {
     document.querySelectorAll('.de').forEach(de => {
         de.className = "de de" + Math.ceil(Math.random() * 6);
     })
