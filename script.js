@@ -4,32 +4,53 @@ var shakePeriod = 100;
 var firstShakeTime = 0;
 var lastShakeTime = 0; // Temps de la dernière secousse enregistrée
 
-// Détecter les changements de mouvement du téléphone
-window.addEventListener('devicemotion', (event) => {
-    const { acceleration } = event;
+// Vérifie si la permission d'accéder aux capteurs de mouvement est requise
+if (typeof DeviceMotionEvent.requestPermission === 'function') {
+    // Demande la permission après une interaction utilisateur
+    document.getElementById('startButton').addEventListener('click', () => {
+        DeviceMotionEvent.requestPermission()
+        .then(permissionState => {
+            if (permissionState === 'granted') {
+                // L'écouteur d'événement `devicemotion` est ajouté seulement si la permission est accordée
+                window.addEventListener('devicemotion', (event) => {
+                    const { acceleration } = event;
+                    console.log(acceleration); // Affiche l'accélération dans la console
+                });
+            } else {
+                alert('Permission non accordée');
+            }
+        })
+        .catch(console.error);
+    });
+} else {
+    // Si la permission n'est pas requise (autres appareils)
+    // Détecter les changements de mouvement du téléphone
+    window.addEventListener('devicemotion', (event) => {
+        const { acceleration } = event;
     
-    // Vérifier si l'accélération dépasse le seuil
-    if (acceleration && (
-        Math.abs(acceleration.x) > threshold ||
-        Math.abs(acceleration.y) > threshold ||
-        Math.abs(acceleration.z) > threshold
-    )) {
-        const now = Date.now();
-        
-        // Vérifier que la secousse précédente date d'au moins 1 seconde
-        if (now - lastShakeTime > shakePeriod){
-            firstShakeTime = now;
-            lastShakeTime = now;
+        // Vérifier si l'accélération dépasse le seuil
+        if (acceleration && (
+            Math.abs(acceleration.x) > threshold ||
+            Math.abs(acceleration.y) > threshold ||
+            Math.abs(acceleration.z) > threshold
+        )) {
+            const now = Date.now();
+            
+            // Vérifier que la secousse précédente date d'au moins 1 seconde
+            if (now - lastShakeTime > shakePeriod){
+                firstShakeTime = now;
+                lastShakeTime = now;
+            }
+            else if (now - firstShakeTime >= shakeDuration) { // 1000 ms = 1 seconde
+                placerDes(nbDes);
+                lancerDes(nbDes);
+            }
+            else if (now - firstShakeTime < shakeDuration) {
+                lastShakeTime = now;
+            }
         }
-        else if (now - firstShakeTime >= shakeDuration) { // 1000 ms = 1 seconde
-            placerDes(nbDes);
-            lancerDes(nbDes);
-        }
-        else if (now - firstShakeTime < shakeDuration) {
-            lastShakeTime = now;
-        }
-    }
-});
+    });
+}
 
 
 const nbLignes = 4;
