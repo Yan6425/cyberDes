@@ -4,6 +4,14 @@ var shakePeriod = 100;
 var firstShakeTime = 0;
 var lastShakeTime = 0; // Temps de la dernière secousse enregistrée
 
+const nbLignes = 4;
+const nbColonnes = 4;
+const table = document.getElementById('table'); 
+const nbDesMax = 5;
+let nbDes = nbDesMax;
+let tblDes = [];
+
+
 // Détecter les changements de mouvement du téléphone
 window.addEventListener('devicemotion', (event) => {
     const { acceleration } = event;
@@ -20,24 +28,22 @@ window.addEventListener('devicemotion', (event) => {
         if (now - lastShakeTime > shakePeriod){
             firstShakeTime = now;
             lastShakeTime = now;
-        }
+        }    
         else if (now - firstShakeTime >= shakeDuration) { // 1000 ms = 1 seconde
             placerDes(nbDes);
             lancerDes(nbDes);
-        }
+        }    
         else if (now - firstShakeTime < shakeDuration) {
             lastShakeTime = now;
-        }
-    }
+        }    
+    }    
+});    
+
+
+document.querySelector('header').addEventListener('click', () => {
+    placerDes(nbDes);
+    lancerDes(nbDes);
 });
-
-
-const nbLignes = 4;
-const nbColonnes = 4;
-const table = document.getElementById('table'); 
-const nbDesMax = 5;
-let nbDes = nbDesMax;
-let tblDes = [];
 
 
 for (let i = 0; i < nbLignes; i++) {
@@ -70,11 +76,6 @@ function enleverDe() {
     }
 }
 
-
-function cucaracha() {
-    placerDes();
-    lancerDes();
-}
 
 // Fonction à exécuter quand on détecte une secousse
 function placerDes() {
